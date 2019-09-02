@@ -42,6 +42,7 @@
               class="form-control"
               id="inputEmail3"
               value="{{arr.title}}"
+              name = "title"
             />
           </div>
         </div>
@@ -51,7 +52,7 @@
           >
           <div class="col-sm-10">
             <img src="{{arr.cover}}" class="article_cover" />
-            <input type="file" id="exampleInputFile" />
+            <input type="file" name="cover" id="exampleInputFile" />
           </div>
         </div>
         <div class="form-group">
@@ -59,8 +60,8 @@
             >文章类别：</label
           >
           <div class="col-sm-4">
-            <select class="form-control" id="options">
-              <option>类别五</option>
+            <select class="form-control" id="options" name="categoryId">
+              <!-- 这里放文章类别 -->
             </select>
           </div>
         </div>
@@ -75,6 +76,7 @@
                 class="form-control"
                 value="{{arr.date}}"
                 id="dateinput"
+                name="date"
               />
               <span class="input-group-btn">
                 <button
@@ -97,7 +99,6 @@
               type="text"
               class="form-control"
               id="rich_content"
-              name="content"
               placeholder="文章内容"
               value="{{arr.content}}"
             />
@@ -114,8 +115,11 @@
 
   <script>
     //获取文章id
-    var id = location.search// console.log(id);
-    $.get("http://localhost:8080/admin/article/search" + id, function(res) {
+    var url = new URL('index.html'+location.search,"http://www.xxx.com")
+    var id = url.searchParams.get('id')
+    var categoryId = url.searchParams.get('categoryId')
+    // console.log(id,categoryId)
+    $.get("http://localhost:8080/admin/article/search",{id:id}, function(res) {
       var form_data = template("form_xinxi", {
         arr: res.data
       });
@@ -124,9 +128,48 @@
       //请求所有文章类别
       $.get('http://localhost:8080/admin/category/list',function(rew){
         $("#options").html(template("form_select", {
-          arr:rew.data
+          arr:rew.data,
+          categoryId: categoryId
       }))
+        // console.log(rew);
+        
       })
+
+
+    //   //创建临时地址,预览图片
+    // //   $('body').on('click','#exampleInputFile',function(){
+    //     var fileobj = $('#exampleInputFile')[0].files[0] //第一步,获取文件的dom对象
+    //     // console.log(fileobj);
+        
+    //     var url = URL.createObjectURL(fileobj) //使用h5中的URL.createobjURL(fileobj)创建临时图片地址
+    //     $(this).attr('src',url) //设置预览图片的src属性为临时图片地址
+    // //   })
+
+
+    //   <!-- 编辑文章 -->
+      $('body').on('click',".btn-success",function(e){
+          e.preventDefault()
+          var formdata = new FormData($('form')[0])
+          formdata.append('id',id)
+          formdata.append('content',tinyMCE.activeEditor.getContent())
+        $.ajax({
+          type : 'post',
+          url : 'http:localhost:8080/admin/article/edit',
+          data : formdata,
+          contentType:false,
+          processData:false,
+          dataType:'json',
+          success:function(res){
+              if(res.msg=="修改成功"){
+                  alert('恭喜您,修改文章成功,请去文章列表页查看修改后的内容...')
+              }
+          }
+      })
+      })
+      
+    
+  
+
      
     });
   </script>
@@ -139,6 +182,8 @@
     {{/each}}
   </script>
   <!-- 获取文章类别结束 -->
+
+  
 
 
 </html>
