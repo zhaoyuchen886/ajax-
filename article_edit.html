@@ -146,27 +146,7 @@
     // //   })
 
 
-    //   <!-- 编辑文章 -->
-      $('body').on('click',".btn-success",function(e){
-          e.preventDefault()
-          var formdata = new FormData($('form')[0])
-          formdata.append('id',id)
-          formdata.append('content',tinyMCE.activeEditor.getContent())
-        $.ajax({
-          type : 'post',
-          url : 'http:localhost:8080/admin/article/edit',
-          data : formdata,
-          contentType:false,
-          processData:false,
-          dataType:'json',
-          success:function(res){
-              if(res.msg=="修改成功"){
-                  alert('恭喜您,修改文章成功,请去文章列表页查看修改后的内容...')
-              }
-          }
-      })
-      })
-      
+   
     
   
 
