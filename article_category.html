@@ -256,7 +256,7 @@
         <td>{{val.slug}}</td>
         <td class="text-center">
             <a href="javascript:editTr({&quot;id&quot;:&quot;1&quot;,&quot;slug&quot;:&quot;uncategorized&quot;,&quot;name&quot;:&quot;未分类&quot;});" data-name='{{val.name}}' data-slug='{{val.slug}}' data-id='{{val.id}}' class="btn btn-info btn-xs">编辑</a>
-            <a href="javascript:deleteTr( 1 );" class="btn btn-danger btn-xs">删除</a>
+            <a href="javascript:deleteTr( 1 );" class="btn btn-danger btn-xs" id="{{val.id}}">删除</a>
         </td>
     </tr>
 
@@ -272,4 +272,19 @@
       $("tbody").html(init_data);
     });
   </script>
+
+  <!-- 删除文章分类 -->
+  <script>
+  
+    $('body').on('click','.btn-danger',function(){
+      var id = $(this).attr('id')
+      // console.log(id);
+      $.post('http://localhost:8080/admin/category/delete',{id:id},function(res){
+          location.reload()
+      })
+      
+    })
+  
+  </script>
+
 </html>
